@@ -1,5 +1,6 @@
 ﻿using DynamoDbDataStructures.Apps;
 using SimpleTable.Domain;
+using SimpleTable.Infrastructure;
 using System;
 using System.Threading.Tasks;
 
@@ -10,10 +11,19 @@ namespace DynamoDbDataStructures
 
         static async Task Main(string[] args)
         {
-            var database = new ConfigureDatabase();
-            await database.SetupDatabase();
+            var database = new DatabaseConnection();
 
+            await RunSimpleTableApp(database);
+
+            Console.ReadKey();
+        }
+
+        private static async Task RunSimpleTableApp(DatabaseConnection database)
+        {
             var app = new SimpleTableApp(database.Context);
+
+            var setupDatabase = new SetupDatabase(database.Client, database.Context);
+            await setupDatabase.SetupTables();
 
             // get all notes, should be none.
             await app.GetAllNotes();
@@ -67,5 +77,4 @@ namespace DynamoDbDataStructures
             await app.GetAllNotes();
         }
     }
-
 }

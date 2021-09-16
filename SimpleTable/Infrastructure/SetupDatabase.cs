@@ -6,39 +6,23 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DynamoDbDataStructures
+namespace SimpleTable.Infrastructure
 {
-    public class ConfigureDatabase
+    public class SetupDatabase
     {
-        private readonly DbConnection _dbConnection;
+        private readonly AmazonDynamoDBClient _client;
+        private readonly IDynamoDBContext _context;
 
-        public IDynamoDBContext Context
+        public SetupDatabase(AmazonDynamoDBClient client, IDynamoDBContext context)
         {
-            get {  return _dbConnection.Context; }
+            _client = client;
+            _context = context;
         }
 
-        public ConfigureDatabase()
-        {
-            _dbConnection = ConnectToDatabase();
-
-        }
-
-        public async Task SetupDatabase()
+        public async Task SetupTables()
         {
             await DeleteDatabaseAsync();
             await CreateDatabaseAsync();
-        }
-
-        private async Task DeleteDatabaseAsync()
-        {
-            try
-            {
-                await _dbConnection.Client.DeleteTableAsync("Notes").ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-
-            }
         }
 
         private async Task CreateDatabaseAsync()
@@ -71,21 +55,19 @@ namespace DynamoDbDataStructures
                 }
             };
 
-            await _dbConnection.Client.CreateTableAsync(request).ConfigureAwait(false);
+            await _client.CreateTableAsync(request).ConfigureAwait(false);
         }
 
-        private static DbConnection ConnectToDatabase()
+        private async Task DeleteDatabaseAsync()
         {
-            var clientConfig = new AmazonDynamoDBConfig { ServiceURL = "http://localhost:8000" };
-            var client = new AmazonDynamoDBClient(clientConfig);
-
-            var context = new DynamoDBContext(client);
-
-            return new DbConnection
+            try
             {
-                Client = client,
-                Context = context
-            };
+                await _client.DeleteTableAsync("Notes").ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+
+            }
         }
     }
 }
