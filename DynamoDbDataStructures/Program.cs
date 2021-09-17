@@ -1,24 +1,51 @@
-﻿using DynamoDbDataStructures.Apps;
+﻿using AutoFixture;
+using DynamoDbDataStructures.Apps;
 using SimpleTable.Domain;
 using SimpleTable.Infrastructure;
 using System;
 using System.Threading.Tasks;
+using TableWithSecondaryIndexes.Infrastructure;
 using TableWithSortKey.Infrastructure;
 using App2Note = TableWithSortKey.Domain.Note;
+using App3Note = TableWithSecondaryIndexes.Domain.Note;
 
 namespace DynamoDbDataStructures
 {
     class Program
     {
+        private static readonly Fixture _fixture = new Fixture();
 
         static async Task Main(string[] args)
         {
             var database = new DatabaseConnection();
 
             //await RunSimpleTableApp(database);
-            await RunTableWithSortKeyApp(database);
+            //await RunTableWithSortKeyApp(database);
+            await RunTableWithSecondayIndexes(database);
 
             Console.ReadKey();
+        }
+
+        private static async Task RunTableWithSecondayIndexes(DatabaseConnection database)
+        {
+            var app = new TableWithSecondaryIndexesApp(database.Context);
+
+            var setupDatabase = new SetupDatabaseTableWithSecondaryIndexes(database.Client, database.Context);
+            await setupDatabase.SetupTables();
+
+            var accountId = Guid.NewGuid();
+
+            // create multiple notes with random date
+            var randomNotes = _fixture.CreateMany<App3Note>(10);
+
+            // insert notes into database
+            foreach (var note in randomNotes)
+            {
+                await app.CreateNote(note, accountId);
+            }
+
+            // get all notes - they should be in date order
+            app.GetAllNotes(accountId);
         }
 
         private static async Task RunTableWithSortKeyApp(DatabaseConnection database)
