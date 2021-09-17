@@ -8,6 +8,6 @@ namespace TableWithSortKey.UseCase.Interfaces
 {
     public interface IGetAllNotesUseCase
     {
-        Task<IEnumerable<Note>> Execute();
+        Task<IEnumerable<Note>> Execute(Guid accountId);
     }
 }

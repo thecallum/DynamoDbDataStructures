@@ -8,6 +8,6 @@ namespace TableWithSortKey.UseCase.Interfaces
 {
     public interface IUpdateNoteUseCase
     {
-        Task<Note> Execute(Guid id, Note newNote);
+        Task<Note> Execute(Guid noteId, Guid accountId, Note newNote);
     }
 }

@@ -3,6 +3,8 @@ using SimpleTable.Domain;
 using SimpleTable.Infrastructure;
 using System;
 using System.Threading.Tasks;
+using TableWithSortKey.Infrastructure;
+using App2Note = TableWithSortKey.Domain.Note;
 
 namespace DynamoDbDataStructures
 {
@@ -13,9 +15,77 @@ namespace DynamoDbDataStructures
         {
             var database = new DatabaseConnection();
 
-            await RunSimpleTableApp(database);
+            //await RunSimpleTableApp(database);
+            await RunTableWithSortKeyApp(database);
 
             Console.ReadKey();
+        }
+
+        private static async Task RunTableWithSortKeyApp(DatabaseConnection database)
+        {
+            var app = new TableWithSortKeyApp(database.Context);
+
+            var setupDatabase = new SetupDatabaseTableWithSortKey(database.Client, database.Context);
+            await setupDatabase.SetupTables();
+
+            var accountOneId = Guid.NewGuid();
+            var accountTwoId = Guid.NewGuid();
+
+            // create first note - account 1
+            var firstNote = new App2Note
+            {
+                Title = "First Note",
+                Contents = "First Note Contents",
+                Created = DateTime.UtcNow
+            };
+
+            var firstNoteId = await app.CreateNote(firstNote, accountOneId);
+
+            // get all notes - account 1
+            await app.GetAllNotes(accountOneId);
+
+            // get all notes - account 2 (no results)
+            await app.GetAllNotes(accountTwoId);
+
+            // create second note - account 1
+            var secondNote = new App2Note
+            {
+                Title = "Second Note",
+                Contents = "Second Note Contents",
+                Created = DateTime.UtcNow
+            };
+
+            var secondNoteId = await app.CreateNote(secondNote, accountOneId);
+
+            // update second note - account 1
+            var secondNoteWithUpdates = new App2Note
+            {
+                Title = "Second Note With Updates",
+                Contents = "Second Note Contents With Updates",
+                Created = DateTime.UtcNow
+            };
+
+            await app.UpdateNote(secondNoteId, accountOneId, secondNoteWithUpdates);
+
+            // get second note - account 1
+            await app.GetNote(secondNoteId, accountOneId);
+
+            // get all notes - account 1
+            await app.GetAllNotes(accountOneId);
+
+            // get all notes - account 2
+            await app.GetAllNotes(accountTwoId);
+
+            // delete note 1 - account 1
+            await app.DeleteNote(firstNoteId, accountOneId);
+
+            // delete note 1 - account 1 (doesnt exist)
+            await app.DeleteNote(firstNoteId, accountOneId);
+
+            // get all notes - account 1
+            await app.GetAllNotes(accountOneId);
+
+
         }
 
         private static async Task RunSimpleTableApp(DatabaseConnection database)

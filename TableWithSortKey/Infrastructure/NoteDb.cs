@@ -9,7 +9,10 @@ namespace TableWithSortKey.Infrastructure
     public class NoteDb
     {
         [DynamoDBHashKey]
-        public Guid Id { get; set; }
+        public Guid AccountId { get; set; }
+
+        [DynamoDBRangeKey]
+        public Guid NoteId { get; set; }
 
         [DynamoDBProperty]
         public string Title { get; set; }

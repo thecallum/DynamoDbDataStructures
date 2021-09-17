@@ -7,10 +7,10 @@ namespace TableWithSortKey.Gateway
 {
     public interface INotesDbGateway
     {
-        Task<Note> GetNoteById(Guid id);
-        Task<IEnumerable<Note>> GetAllNotes();
-        Task<Guid> CreateNote(Note newNote);
-        Task<Note> UpdateNote(Guid id, Note newNote);
-        Task<Note> DeleteNote(Guid id);
+        Task<Note> GetNoteById(Guid noteId, Guid accountId);
+        Task<IEnumerable<Note>> GetAllNotes(Guid accountId);
+        Task<Guid> CreateNote(Note newNote, Guid accountId);
+        Task<Note> UpdateNote(Guid noteId, Guid accountId, Note newNote);
+        Task<Note> DeleteNote(Guid noteId, Guid accountId);
     }
 }

@@ -8,6 +8,6 @@ namespace TableWithSortKey.UseCase.Interfaces
 {
     public interface ICreateNoteUseCase
     {
-        Task<Guid> Execute(Note newNote);
+        Task<Guid> Execute(Note newNote, Guid accountId);
     }
 }

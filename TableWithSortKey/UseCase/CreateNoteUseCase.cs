@@ -19,9 +19,9 @@ namespace TableWithSortKey.UseCase
             _notesGateway = new NotesDbGateway(dynamoDbContext);
         }
 
-        public async Task<Guid> Execute(Note newNote)
+        public async Task<Guid> Execute(Note newNote, Guid accountId)
         {
-            var response = await _notesGateway.CreateNote(newNote).ConfigureAwait(false);
+            var response = await _notesGateway.CreateNote(newNote, accountId).ConfigureAwait(false);
 
             return response;
         }

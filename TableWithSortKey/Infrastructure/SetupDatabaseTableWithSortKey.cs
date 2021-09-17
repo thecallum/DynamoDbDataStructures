@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace TableWithSortKey.Infrastructure
 {
-    public class SetupDatabase
+    public class SetupDatabaseTableWithSortKey
     {
         private readonly AmazonDynamoDBClient _client;
         private readonly IDynamoDBContext _context;
 
-        public SetupDatabase(AmazonDynamoDBClient client, IDynamoDBContext context)
+        public SetupDatabaseTableWithSortKey(AmazonDynamoDBClient client, IDynamoDBContext context)
         {
             _client = client;
             _context = context;
@@ -36,7 +36,12 @@ namespace TableWithSortKey.Infrastructure
                     {
                         new AttributeDefinition
                         {
-                            AttributeName = "id",
+                            AttributeName = "accountId",
+                            AttributeType = "S"
+                        },
+                        new AttributeDefinition
+                        {
+                            AttributeName = "noteId",
                             AttributeType = "S"
                         }
                     },
@@ -44,8 +49,13 @@ namespace TableWithSortKey.Infrastructure
                   {
                     new KeySchemaElement
                     {
-                      AttributeName = "id",
+                      AttributeName = "accountId",
                       KeyType = "HASH"  //Partition key
+                    },
+                    new KeySchemaElement
+                    {
+                      AttributeName = "noteId",
+                      KeyType = "Range"  //Sort key
                     }
                   },
                 ProvisionedThroughput = new ProvisionedThroughput

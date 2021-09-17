@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.0.66" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.0.67" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SimpleTable\SimpleTable.csproj" />
+    <ProjectReference Include="..\TableWithSortKey\TableWithSortKey.csproj" />
   </ItemGroup>
 
 </Project>

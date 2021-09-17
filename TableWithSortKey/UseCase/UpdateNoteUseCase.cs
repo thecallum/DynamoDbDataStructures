@@ -18,9 +18,9 @@ namespace TableWithSortKey.UseCase
             _notesGateway = new NotesDbGateway(dynamoDbContext);
         }
 
-        public async Task<Note> Execute(Guid id, Note newNote)
+        public async Task<Note> Execute(Guid noteId, Guid accountId, Note newNote)
         {
-            var response = await _notesGateway.UpdateNote(id, newNote).ConfigureAwait(false);
+            var response = await _notesGateway.UpdateNote(noteId, accountId, newNote).ConfigureAwait(false);
             // returns null if not found
 
             return response;

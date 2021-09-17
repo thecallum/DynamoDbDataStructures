@@ -18,11 +18,12 @@ namespace TableWithSortKey.Factories
             };
         }
 
-        public static NoteDb ToDatabase(this Note domain, Guid? id = null)
+        public static NoteDb ToDatabase(this Note domain, Guid? noteId = null, Guid? accountId = null)
         {
             return new NoteDb
             {
-                Id = (Guid)((id == null) ? Guid.NewGuid() : id),
+                AccountId = (Guid)((accountId == null) ? Guid.NewGuid() : accountId),
+                NoteId = (Guid)((noteId == null) ? Guid.NewGuid() : noteId),
                 Title = domain.Title,
                 Contents = domain.Contents,
                 Created = domain.Created
